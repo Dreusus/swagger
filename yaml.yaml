@@ -1,0 +1,2874 @@
+openapi: 3.0.0
+info:
+  title: API for Leads.Tech
+  description: 'test'
+  version: 1.0.0
+servers:
+  - url: http://api.st.leads.tech
+    description: stage1
+  - url: http://api.st2.leads.tech
+    description: stage2
+  - url: http://api.st3.leads.tech
+    description: stage3
+  - url: http://api.leads.tech
+    description: prod
+paths:
+  /v1/front/lead/auth/registration:
+    post:
+      tags:
+        - v1 > front
+      summary: Регистрация лида
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - firstName
+                - email
+                - phone
+                - telegramNick
+                - traffic
+                - password
+              properties:
+                firstName:
+                  type: string
+                  example: randomFirstName
+                email:
+                  type: string
+                  example: random_email@mail.ru
+                phone:
+                  type: integer
+                  example: '880005553535'
+                telegramNick:
+                  type: string
+                  example: tg
+                traffic:
+                  type: string
+                  example: financial
+                password:
+                  type: string
+                  example: password
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                type: object
+              examples:
+                example-0:
+                  summary: Успешная регистрация
+                  value:
+                    success: true
+                    data:
+                      token: >-
+                        eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ3ZWJtYXN0ZXJJZCI6LTIyOTY4LCJqc29uUmVmcmVzaFdlYlRva2VuSWQiOiIyNjJlZjNiMC01M2QwLTRkYzMtYjYxMC0zMWMzNzhmOWI4ZDkiLCJleHAiOiIyMDI0LTAzLTMwIDE2OjQ4OjEzIiwibG9naW5BdCI6IjIwMjQtMDItMjggMTY6NDg6MTMifQ==.17d57faf9ac6d887cdd1a49fd4c08ccd4d83e8ac364027f9acd98eb06189c10b4719631ee6d9c8e75bf0572f3b887ed4f929aece9f7ad3d77399e38a891f9b2a
+                example-1:
+                  summary: Валидация на ошибки
+                  value:
+                    success: false
+                    error:
+                      errors:
+                        firstName:
+                          - First Name cannot be blank.
+                        email:
+                          - Email cannot be blank.
+                        phone:
+                          - Phone cannot be blank.
+                        telegramNick:
+                          - Telegram Nick cannot be blank.
+                        traffic:
+                          - Traffic cannot be blank.
+                        password:
+                          - Password cannot be blank.
+  /v1/front/lead/phone/get-confirmation-code:
+    post:
+      tags:
+        - v1 > front
+      summary: Получение номера телефона
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - phone
+              type: object
+              properties:
+                phone:
+                  type: number
+                  example: 880055535
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                error:
+                  errors:
+                    phone:
+                      - Повторите попытку позднее
+  /v1/front/lead/phone/confirm:
+    post:
+      tags:
+        - v1 > front
+      summary: Подтверждение номера телефона
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - phone
+                - confirmCode
+              type: object
+              properties:
+                phone:
+                  type: number
+                  example: 8888
+                confirmCode:
+                  type: number
+                  example: 3344
+              example:
+                phone: 888888888888
+                confirmCode: 3344
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data: []
+  /v1/front/lead/user/to-moderate:
+    post:
+      tags:
+        - v1 > front
+      summary: Отправка на модерацию
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstName
+                - lastName
+                - email
+                - telegramNick
+                - orgMode
+                - timeZone
+                - skill
+                - payForm
+                - traffic
+              properties:
+                firstName:
+                  type: string
+                  example: firstName
+                lastName:
+                  type: string
+                  example: lastName
+                email:
+                  type: string
+                  example: email@email.mu
+                telegramNick:
+                  type: string
+                  example: tg
+                orgMode:
+                  type: string
+                  example: individual entrepreneur
+                timeZone:
+                  type: string
+                  example: -12
+                skill:
+                  type: string
+                  example: more than 3 years
+                payForm:
+                  type: string
+                  example: wallet
+                traffic:
+                  type: string
+                  example: financial
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-0:
+                  summary: Успешно отправлен
+                  value:
+                    success: true
+                    data: []
+                example-1:
+                  summary: Валидация на ошибки
+                  value:
+                    success: false
+                    error:
+                      errors:
+                        lastName:
+                          - Last Name cannot be blank.
+                        orgMode:
+                          - Org Mode cannot be blank.
+                        timeZone:
+                          - Time Zone cannot be blank.
+                        skill:
+                          - Skill cannot be blank.
+                        payForm:
+                          - Pay Form cannot be blank.
+                        firstName:
+                          - First Name cannot be blank.
+                        email:
+                          - Email cannot be blank.
+                        telegramNick:
+                          - Telegram Nick cannot be blank.
+                        traffic:
+                          - Traffic cannot be blank.
+  /v1/front/user/restore/get-code:
+    post:
+      tags:
+        - v1 > front
+      summary: Получение кода восстановления
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: email@example.ru
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: string
+                example:
+                  success: true
+                  data: ["Пример элемента массива"]
+  /v1/front/user/restore/set-password:
+    post:
+      tags:
+        - v1 > front
+      summary: Установка пароля
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - restoreCode
+                - password
+              properties:
+                email:
+                  type: string
+                  example: email@example.com
+                restoreCode:
+                  type: string
+                  example: 878964660470172645444
+                password:
+                  type: string
+                  example: qwerty12345
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                error:
+                  errors:
+                    restoreCode:
+                      - Неверный код восстановления
+  /v1/front/advertiser/list:
+    get:
+      tags:
+        - v1 > front
+      summary: Список рекламодателей
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: number
+                  name:
+                    type: string
+                  createDate:
+                    type: string
+                  updateDate:
+                    type: string
+                  status:
+                    type: number
+                  note:
+                     type: string
+                  refusalWebmasters:
+                      type: object
+                type: object
+              example:
+                success: true
+                data: [
+                        {
+                            "id": 12,
+                            "name": "Сити (cytiads)",
+                            "createDate": "2020-11-12 14:28:17",
+                            "updateDate": "2020-11-12 14:28:33",
+                            "status": 1,
+                            "note": "",
+                            "refusalWebmasters": "{}"
+                        },
+                        {
+                            "id": 181,
+                            "name": "ИП Кузин",
+                            "createDate": "2023-12-13 14:04:21",
+                            "updateDate": "2023-12-13 15:01:35",
+                            "status": 2,
+                            "note": "",
+                            "refusalWebmasters": "{}"
+                        }
+                    ]
+  /v1/front/authorization/login:
+    post:
+      tags:
+        - v1 > front
+      summary: Авторизация
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - login
+                - password
+              properties:
+                login:
+                  type: string
+                password:
+                  type: string
+              example:
+                login: reserved2@leads.tech
+                password: reserved2@leads.tech
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-0:
+                  summary: Успешная авторизация
+                  value:
+                    success: true
+                    data:
+                      jsonAccessWebToken: >-
+                        eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ3ZWJtYXN0ZXJJZCI6MywianNvblJlZnJlc2hXZWJUb2tlbklkIjoiNjE2YWYzMzItZTQ0NS00YzUzLWI5ZjItNDk4MjlkNGJiYmQ5IiwiZXhwIjoiMjAyNC0wMy0zMCAxNjo1NTowNiIsImxvZ2luQXQiOiIyMDI0LTAyLTI4IDE2OjU1OjA2In0=.67af8dce30b705fbd39ebe4e65edcf4b2fd22d6c198be3bc106a6b39e384aa2648a5907e9232730ca001cb183e68a5d95ad82204bbe2668b0711723d3b67fafe
+                      jsonRefreshWebToken: >-
+                        c379bd749a768687a13cb846d983d97cce415dff17203faa9dee674122d884e6a71fbf82ac8f88263ba8fd7e97fddb6737f12f2f98c205c6a9f1b5f49b5ff530
+                example-1:
+                  summary: Неверные креды
+                  value:
+                    success: false
+                    error:
+                      - mowe03
+  /v1/front/authorization/change-password:
+    post:
+      tags:
+        - v1 > front
+      summary: Изменения пароля
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - currentPassword
+                - newPassword
+              properties:
+                currentPassword:
+                  type: string
+                newPassword:
+                  type: string
+              type: object
+              example:
+                currentPassword: qwerty12345
+                newPassword: 54321qwerty
+      responses:
+        '200':
+          description: Password change successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '400':
+          description: Error in password change request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  error:
+                    type: string
+  /v1/front/offer-category/list:
+    get:
+      tags:
+        - v1 > front
+      summary: Список категорий офферов
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  - id: 3
+                    name: Юристы
+                    licenseRequired: false
+                  - id: 4
+                    name: Брокер
+                    licenseRequired: false
+                  - id: 12
+                    name: Беттинг
+                    licenseRequired: false
+                  - id: 13
+                    name: Гэмблинг
+                    licenseRequired: false
+                  - id: 1
+                    name: МФО
+                    licenseRequired: true
+                  - id: 2
+                    name: Банки
+                    licenseRequired: true
+                  - id: 5
+                    name: 'Кредитные карты: Банки'
+                    licenseRequired: true
+                  - id: 6
+                    name: 'Дебетовые карты: Банки'
+                    licenseRequired: true
+                  - id: 7
+                    name: ' Потребительский кредит: Банки'
+                    licenseRequired: true
+                  - id: 8
+                    name: ' Кредит под залог: Банки'
+                    licenseRequired: true
+                  - id: 9
+                    name: 'Инвестиции: Банки'
+                    licenseRequired: true
+                  - id: 11
+                    name: 'РКО: Банки'
+                    licenseRequired: true
+  /v1/front/promo/list:
+    get:
+      tags:
+        - v1 > front
+      summary: Список акций
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  allItemsCount: 7
+                  items:
+                    - id: 16
+                      offerId: 52
+                      offerName: 'CreditPlus - Выдача '
+                      offerCategory: МФО
+                      offerImage: >-
+                        https://ltt-storage.storage.yandexcloud.net/5f2030a9b471c1.22837308
+                      date: '2023-10-01'
+                      minBenefit: 19000
+                      maxBenefit: 34500
+                      minGoal: 100
+                      maxGoal: 150
+                      conversionCount: 105
+                      earned: 20140
+                    - id: 25
+                      offerId: 66
+                      offerName: Займер - Выдача
+                      offerCategory: МФО
+                      offerImage: >-
+                        https://ltt-bucket.storage.yandexcloud.net/642bc0f325b986.20877644
+                      date: '2023-10-01'
+                      minBenefit: 37000
+                      maxBenefit: 66000
+                      minGoal: 100
+                      maxGoal: 150
+                      conversionCount: 54
+                      earned: 0
+                    - id: 75
+                      offerId: 223
+                      offerName: One Click Money - Выдача
+                      offerCategory: МФО
+                      offerImage: >-
+                        https://ltt-bucket.storage.yandexcloud.net/61a7b0315fe9d4.67762453
+                      date: '2023-10-01'
+                      minBenefit: 71600
+                      maxBenefit: 112000
+                      minGoal: 358
+                      maxGoal: 448
+                      conversionCount: 146
+                      earned: 0
+                    - id: 212
+                      offerId: 50
+                      offerName: Срочно Деньги - Выдача
+                      offerCategory: МФО
+                      offerImage: >-
+                        https://ltt-bucket.storage.yandexcloud.net/6422c11f539330.15276332
+                      date: '2023-12-01'
+                      minBenefit: 110970
+                      maxBenefit: 167050
+                      minGoal: 411
+                      maxGoal: 514
+                      conversionCount: 326
+                      earned: 0
+                    - id: 232
+                      offerId: 351
+                      offerName: 'Credit7 - Выдача '
+                      offerCategory: МФО
+                      offerImage: >-
+                        https://ltt-bucket.storage.yandexcloud.net/6220c4c7b0bd28.54796511
+                      date: '2023-12-01'
+                      minBenefit: 29580
+                      maxBenefit: 45570
+                      minGoal: 174
+                      maxGoal: 217
+                      conversionCount: 325
+                      earned: 45570
+                    - id: 293
+                      offerId: 351
+                      offerName: 'Credit7 - Выдача '
+                      offerCategory: МФО
+                      offerImage: >-
+                        https://ltt-bucket.storage.yandexcloud.net/6220c4c7b0bd28.54796511
+                      date: '2024-01-01'
+                      minBenefit: 65960
+                      maxBenefit: 102060
+                      minGoal: 340
+                      maxGoal: 400
+                      conversionCount: 239
+                      earned: 0
+                    - id: 375
+                      offerId: 351
+                      offerName: 'Credit7 - Выдача '
+                      offerCategory: МФО
+                      offerImage: >-
+                        https://ltt-bucket.storage.yandexcloud.net/6220c4c7b0bd28.54796511
+                      date: '2024-02-01'
+                      minBenefit: 39760
+                      maxBenefit: 62125
+                      minGoal: 284
+                      maxGoal: 355
+                      conversionCount: 0
+                      earned: 0
+  /v1/front/promo/balance:
+    get:
+      tags:
+        - v1 > front
+      summary: Баланс веба
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  balance: 65710
+                  updateDate: '2023-12-22 22:08:04'
+  /v1/front/offer/list:
+    get:
+      tags:
+        - v1 > front
+      summary: Список офферов
+      parameters:
+        - name: page
+          in: query
+          required: true
+          description: Номер страницы
+          schema:
+            type: integer
+          example: '1'
+        - name: pageSize
+          in: query
+          required: true
+          description: Количество офферов на странице
+          schema:
+            type: integer
+          example: '500'
+        - name: order
+          in: query
+          description: sort
+          schema:
+            type: string
+          example: asc
+        - name: OfferSearch[status]
+          in: query
+          schema:
+            type: string
+        - name: OfferSearch[id][]
+          in: query
+          schema:
+            type: string
+        - name: OfferSearch[countries][]
+          in: query
+          schema:
+            type: string
+        - name: OfferSearch[currencies][]
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  allItemsCount: 211
+                  items:
+                    - id: 644
+                      image:
+                        - link: >-
+                            https://ltt-bucket.storage.yandexcloud.net/642bc0f96fd808.04507775
+                          width: 288
+                          height: 120
+                          extension: svg
+                        - link: >-
+                            https://ltt-bucket.storage.yandexcloud.net/642bc0f968d1f3.37157796
+                          width: 144
+                          height: 60
+                          extension: svg
+                        - link: >-
+                            https://ltt-bucket.storage.yandexcloud.net/642bc0f9636d27.93999410
+                          width: 64
+                          height: 64
+                          extension: svg
+                        - link: >-
+                            https://ltt-bucket.storage.yandexcloud.net/642bc0f958d938.07616246
+                          width: 32
+                          height: 32
+                          extension: svg
+                      name: Займер Test
+                      text: >-
+                        <p><strong>Описание оффера:  </strong>ООО МФК "Займер" -
+                        это первый в России полностью автоматизированный сервис,
+                        выдающий онлайн займы без участия человека быстро,
+                        круглосуточно, без праздников и выходных. В основе
+                        работы системы - сверхскоростной робот ООО МФК "Займер",
+                        который быстро анализирует более 1 800 параметров заявки
+                        обратившегося клиента и очень быстро принимает решение о
+                        выдаче кредита.</p><p><strong>Сумма займа: </strong>от
+                        2000 до 30 000 руб.</p><p><strong>Возраст
+                        заемщика:</strong> от 18 до 75</p><p><strong>Срок
+                        займа:</strong> от 7 до 30
+                        дней</p><p><strong>Ставка:</strong> -от 0% на первый и
+                        займ и 0,8% на повторный</p><p><strong>ГЕО:</strong>
+                        РФ</p><p><strong>Запрещённый трафик</strong>:
+                        таргетированная реклама в Instagram и FB, <a
+                        href="https://docs.google.com/document/d/1Op2MpdK7jYfQd1wu-qgbEA5UG5b6AHSQ/edit">https://docs.google.com/document/d/1Op2MpdK7jYfQd1...</a></p><p><strong>Список
+                        минус-слов</strong>: <a
+                        href="https://docs.google.com/document/d/12OoiMex2pDYePrEbw9avZw6qindb9Ir9/edit?usp=sharing&ouid=112690927273337905704&rtpof=true&sd=true">https://docs.google.com/document/d/12OoiMex2pDYePr...</a></p><p><strong>Баннеры
+                        и логотипы</strong>: <a
+                        href="https://drive.google.com/drive/folders/1bsEbF1dHDdDbJzxkHwyPav5VlF0to2h3?usp=share_link">https://drive.google.com/drive/folders/1bsEbF1dHDd...</a></p><p><strong>Бриф:
+                        </strong><a
+                        href="https://docs.google.com/document/d/1Op2MpdK7jYfQd1wu-qgbEA5UG5b6AHSQ/edit?usp=sharing&ouid=112690927273337905704&rtpof=true&sd=true">https://docs.google.com/document/d/1Op2MpdK7jYfQd1...</a></p>
+                      link: http://t.st.leads.tech/click/3/644/
+                      epc: ''
+                      cr: null
+                      currency: RUB
+                      status: 11
+                      country: Россия
+                      createDate: '2023-01-25 20:31:45'
+                      updateDate: '2024-02-14 09:26:54'
+                      advertiser_id: 149
+                      category_id: 1
+                      holdSeconds: 0
+                      goalAction: выдача
+                      slug: zaymertest
+                      amount_min: '2000.0000'
+                      amount_max: '30000.0000'
+                      annual_percentage_min: '0.0000'
+                      daily_percentage_min: '0.0000'
+                      age_min: 18
+                      age_max: 75
+                      goals:
+                        - name: Выдача
+                          sum: '4500.0000'
+                          date: '2023-08-26 00:00:00'
+  /v1/front/offer/list-names:
+    get:
+      tags:
+        - v1 > front
+      summary: Список офферов(короткая версия)
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  - id: 549
+                    name: 100 монет - Заявка
+                    slug: 100monet
+                    imageId: 2342
+                    categoryId: 4
+                    image:
+                      id: 2342
+                      links: >-
+                        [{"link":
+                        "https://ltt-bucket.storage.yandexcloud.net/63563c610a3f28.43888793",
+                        "width": 32, "height": 32, "extension": "svg"}, {"link":
+                        "https://ltt-bucket.storage.yandexcloud.net/63563c61148413.91080372",
+                        "width": 64, "height": 64, "extension": "svg"}, {"link":
+                        "https://ltt-bucket.storage.yandexcloud.net/63563c611b0eb0.85257960",
+                        "width": 144, "height": 60, "extension": "svg"},
+                        {"link":
+                        "https://ltt-bucket.storage.yandexcloud.net/63563c61263937.86317916",
+                        "width": 288, "height": 120, "extension": "svg"}]
+                  - id: 788
+                    name: 10 Чирик - Привязка карты
+                    slug: chirik
+                    imageId: 2910
+                    categoryId: 4
+                    image:
+                      id: 2910
+                      links: >-
+                        [{"link":
+                        "https://ltt-bucket.storage.yandexcloud.net/654a302f81a889.87852049",
+                        "width": 32, "height": 32, "extension": "svg"}, {"link":
+                        "https://ltt-bucket.storage.yandexcloud.net/654a302f8ac406.03046186",
+                        "width": 64, "height": 64, "extension": "svg"}, {"link":
+                        "https://ltt-bucket.storage.yandexcloud.net/654a302f95f5a4.11443293",
+                        "width": 144, "height": 60, "extension": "svg"},
+                        {"link":
+                        "https://ltt-bucket.storage.yandexcloud.net/654a302fb4e500.81546083",
+                        "width": 288, "height": 120, "extension": "svg"}]
+  /v1/front/stat/by-day:
+    get:
+      tags:
+        - v1 > front
+      summary: Статистика по дням
+      parameters:
+        - name: dateStart
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-01'
+        - name: dateEnd
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-30'
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: pageSize
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '500'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  allItemsCount: 4
+                  items:
+                    - date: 09.01.2024
+                      clicks: 7
+                      uniques: 0
+                      hosts: 2
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                    - date: 16.01.2024
+                      clicks: 1
+                      uniques: 1
+                      hosts: 1
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                    - date: 17.01.2024
+                      clicks: 3
+                      uniques: 1
+                      hosts: 1
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                    - date: 22.01.2024
+                      clicks: 5
+                      uniques: 5
+                      hosts: 3
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                  summary:
+                    clicks: 16
+                    uniques: 7
+                    hosts: 7
+                    conversions: 0
+                    approved: 0
+                    hold: 0
+                    rejected: 0
+                    inprogress: 0
+                    sumwebmaster: 0
+                    CR: 0
+                    AR: 0
+                    EPL: 0
+                    EPC: 0
+                    EPCHosts: 0
+        '500':
+          description: Не указаны обязательные параметры
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                error:
+                  name: Exception
+                  message: >-
+                    Argument 1 passed to common\components\date\Date::init()
+                    must be of the type int, bool given, called in
+                    /var/www/releases/2024-02-28_16-46-11/common/components/date/Date.php
+                    on line 21
+                  code: 0
+                  type: TypeError
+                  file: >-
+                    /var/www/releases/2024-02-28_16-46-11/common/components/date/Date.php
+                  line: 24
+                  stack-trace:
+                    - >-
+                      #0
+                      /var/www/releases/2024-02-28_16-46-11/common/components/date/Date.php(21):
+                      common\components\date\Date->init()
+                    - >-
+                      #1
+                      /var/www/releases/2024-02-28_16-46-11/common/components/date/Date.php(99):
+                      common\components\date\Date->__construct()
+                    - >-
+                      #2
+                      /var/www/releases/2024-02-28_16-46-11/common/widgets/statSearch/models/StatSearch.php(222):
+                      common\components\date\Date::from()
+                    - >-
+                      #3
+                      /var/www/releases/2024-02-28_16-46-11/common/widgets/statSearch/models/StatSearch.php(210):
+                      common\widgets\statSearch\models\StatSearch->getStart()
+                    - >-
+                      #4
+                      /var/www/releases/2024-02-28_16-46-11/common/widgets/statSearch/models/StatSearch.php(159):
+                      common\widgets\statSearch\models\StatSearch->getDateRange()
+                    - >-
+                      #5
+                      /var/www/releases/2024-02-28_16-46-11/api/handler/front/stat/ByDayHandler.php(25):
+                      common\widgets\statSearch\models\StatSearch->load()
+                    - >-
+                      #6
+                      /var/www/releases/2024-02-28_16-46-11/api/controllers/v1/front/StatController.php(22):
+                      api\handler\front\stat\ByDayHandler->handle()
+                    - >-
+                      #7 [internal function]:
+                      api\controllers\v1\front\StatController->actionByDay()
+                    - >-
+                      #8
+                      /var/www/releases/2024-02-28_16-46-11/vendor/yiisoft/yii2/base/InlineAction.php(57):
+                      call_user_func_array()
+                    - >-
+                      #9
+                      /var/www/releases/2024-02-28_16-46-11/vendor/yiisoft/yii2/base/Controller.php(178):
+                      yii\base\InlineAction->runWithParams()
+                    - >-
+                      #10
+                      /var/www/releases/2024-02-28_16-46-11/vendor/yiisoft/yii2/base/Module.php(552):
+                      yii\base\Controller->runAction()
+                    - >-
+                      #11
+                      /var/www/releases/2024-02-28_16-46-11/vendor/yiisoft/yii2/web/Application.php(103):
+                      yii\base\Module->runAction()
+                    - >-
+                      #12
+                      /var/www/releases/2024-02-28_16-46-11/vendor/yiisoft/yii2/base/Application.php(384):
+                      yii\web\Application->handleRequest()
+                    - >-
+                      #13
+                      /var/www/releases/2024-02-28_16-46-11/api/web/index.php(16):
+                      yii\base\Application->run()
+                    - '#14 {main}'
+  /v1/front/stat/by-day-hour:
+    get:
+      tags:
+        - v1 > front
+      summary: Cтатистика по дням-часам
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: dateStart
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-01'
+        - name: dateEnd
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-30'
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: pageSize
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '500'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  allItemsCount: 5
+                  items:
+                    - date: 09.01.2024
+                      hour: 12:00-13:00
+                      clicks: 3
+                      uniques: 0
+                      hosts: 2
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                    - date: 09.01.2024
+                      hour: 13:00-14:00
+                      clicks: 4
+                      uniques: 0
+                      hosts: 0
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                    - date: 16.01.2024
+                      hour: 16:00-17:00
+                      clicks: 1
+                      uniques: 1
+                      hosts: 1
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                    - date: 17.01.2024
+                      hour: 15:00-16:00
+                      clicks: 3
+                      uniques: 1
+                      hosts: 1
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                    - date: 22.01.2024
+                      hour: 17:00-18:00
+                      clicks: 5
+                      uniques: 5
+                      hosts: 3
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                  summary:
+                    clicks: 16
+                    uniques: 7
+                    hosts: 7
+                    conversions: 0
+                    approved: 0
+                    hold: 0
+                    rejected: 0
+                    inprogress: 0
+                    sumwebmaster: 0
+                    CR: 0
+                    AR: 0
+                    EPL: 0
+                    EPC: 0
+                    EPCHosts: 0
+  /v1/front/stat/by-offer:
+    get:
+      tags:
+        - v1 > front
+      summary: Статистика по офферам
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: dateStart
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-01'
+        - name: dateEnd
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-30'
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: pageSize
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '500'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  allItemsCount: 6
+                  items:
+                    - clicks: 3
+                      uniques: 2
+                      hosts: 2
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                      offerId: 1
+                      offerTitle: MoneyMan - Выдача
+                    - clicks: 2
+                      uniques: 2
+                      hosts: 1
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                      offerId: 2
+                      offerTitle: Monebo
+                    - clicks: 1
+                      uniques: 1
+                      hosts: 1
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                      offerId: 4
+                      offerTitle: BelkaCredit - Выдача
+                    - clicks: 1
+                      uniques: 1
+                      hosts: 1
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                      offerId: 17
+                      offerTitle: Займы 24 на 7
+                    - clicks: 6
+                      uniques: 0
+                      hosts: 1
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                      offerId: 351
+                      offerTitle: 'Credit7 - Выдача '
+                    - clicks: 3
+                      uniques: 1
+                      hosts: 1
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                      offerId: 899
+                      offerTitle: Тестовый240207181758.541351
+                  summary:
+                    clicks: 16
+                    uniques: 7
+                    hosts: 7
+                    conversions: 0
+                    approved: 0
+                    hold: 0
+                    rejected: 0
+                    inprogress: 0
+                    sumwebmaster: 0
+                    CR: 0
+                    AR: 0
+                    EPL: 0
+                    EPC: 0
+                    EPCHosts: 0
+  /v1/front/stat/by-subid:
+    get:
+      tags:
+        - v1 > front
+      summary: Статистика по subid
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: dateStart
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-01'
+        - name: dateEnd
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-30'
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: pageSize
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '500'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  allItemsCount: 1
+                  items:
+                    - sub1: null
+                      sub2: null
+                      sub3: null
+                      sub4: null
+                      sub5: null
+                      sub6: null
+                      sub7: null
+                      sub8: null
+                      sub9: null
+                      sub10: null
+                      clicks: 16
+                      uniques: 7
+                      hosts: 7
+                      conversions: 0
+                      inprogress: 0
+                      approved: 0
+                      rejected: 0
+                      sumincome: 0
+                      sumwebmaster: 0
+                      sumrefback: 0
+                      hold: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                  summary:
+                    clicks: 16
+                    uniques: 7
+                    hosts: 7
+                    conversions: 0
+                    approved: 0
+                    hold: 0
+                    rejected: 0
+                    inprogress: 0
+                    sumwebmaster: 0
+                    CR: 0
+                    AR: 0
+                    EPL: 0
+                    EPC: 0
+                    EPCHosts: 0
+  /v1/front/stat/by-builder:
+    get:
+      tags:
+        - v1 > front
+      summary: Конструктор статистики
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: dateStart
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-01'
+        - name: dateEnd
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-30'
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: pageSize
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '500'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  allItemsCount: 4
+                  items:
+                    '2024-01-09':
+                      '1':
+                        clicks: 1
+                      '351':
+                        clicks: 6
+                    '2024-01-16':
+                      '4':
+                        clicks: 1
+                    '2024-01-17':
+                      '899':
+                        clicks: 3
+                    '2024-01-22':
+                      '1':
+                        clicks: 2
+                      '2':
+                        clicks: 2
+                      '17':
+                        clicks: 1
+                  summary:
+                    '2024-01-09':
+                      clicks: '7'
+                    '2024-01-16':
+                      clicks: '1'
+                    '2024-01-17':
+                      clicks: '3'
+                    '2024-01-22':
+                      clicks: '5'
+  /v1/front/user/get:
+    get:
+      tags:
+        - v1 > front
+      summary: Получение пользователя
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  id: 3
+                  email: reserved2@leads.tech
+                  firstName: Отказной
+                  lastName: Вебзайм
+                  phone: '79139124616'
+                  telegramNick: '@Ch_ris_ti_na'
+                  traffic: ''
+                  orgMode: ''
+                  timeZone: ''
+                  skill: ''
+                  payForm: ''
+                  isLead: false
+                  status: Активен
+  /v1/front/user/update:
+    get:
+      tags:
+        - v1 > front
+      summary: Обновление пользователя
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data: []
+  /v1/front/webmaster-postback/get:
+    get:
+      tags:
+        - v1 > front
+      summary: Эндпоинт есть в трекере, но ничего не возвращает
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                error:
+                  name: Not Found
+                  message: ''
+                  code: 0
+                  status: 404
+                  type: yii\web\NotFoundHttpException
+  /v1/front/webmaster-postback/list:
+    get:
+      tags:
+        - v1 > front
+      summary: /webmaster-postback/list
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data: []
+  /v1/front/webmaster-postback/create:
+    get:
+      tags:
+        - v1 > front
+      summary: /webmaster-postback/create
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                error: []
+  /v1/front/webmaster-postback/update:
+    get:
+      tags:
+        - v1 > front
+      summary: /webmaster-postback/update
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                error: []
+  /v1/front/webmaster-postback/delete:
+    get:
+      tags:
+        - v1 > front
+      summary: /webmaster-postback/delete
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                error: []
+  /v1/front/download/conversion:
+    get:
+      tags:
+        - v1 > front
+      summary: download/conversion
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: dateStart
+          in: query
+          schema:
+            type: string
+          example: 01-11-2023
+        - name: dateEnd
+          in: query
+          schema:
+            type: string
+          example: 30-11-2023
+        - name: strictSubs
+          in: query
+          schema:
+            type: boolean
+          example: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/open/dictionary/currency/list:
+    get:
+      tags:
+        - v1 > open
+      summary: Список валют
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  - id: 1
+                    code: RUB
+                  - id: 2
+                    code: USD
+                  - id: 3
+                    code: KZT
+                  - id: 5
+                    code: PLN
+                  - id: 6
+                    code: EUR
+  /v1/open/offer/list:
+    get:
+      tags:
+        - v1 > open
+      summary: /offer/list
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  - id: 1
+                    image:
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/6515773d61f5c6.33252207
+                        width: 288
+                        height: 120
+                        extension: svg
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/6515773d5b8a16.93339909
+                        width: 144
+                        height: 60
+                        extension: svg
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/6515773d3f03e6.77949797
+                        width: 64
+                        height: 64
+                        extension: svg
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/6515773d1322d1.72924165
+                        width: 32
+                        height: 32
+                        extension: svg
+                    name: MoneyMan - Выдача
+                    cr: null
+                    epc: '187.69674711438'
+                  - id: 2
+                    image:
+                      - link: >-
+                          https://ltt-storage.storage.yandexcloud.net/5ecfc1c1d602c6.50617363
+                        width: 288
+                        height: 120
+                        extension: svg+xml
+                      - link: >-
+                          https://ltt-storage.storage.yandexcloud.net/5ecfc1c16b0506.09236096
+                        width: 144
+                        height: 60
+                        extension: svg+xml
+                    name: Monebo
+                    cr: null
+                    epc: '65.384268373064'
+                  - id: 4
+                    image:
+                      - link: >-
+                          https://ltt-storage.storage.yandexcloud.net/60d1b512c7eda0.25200777
+                        width: 288
+                        height: 120
+                        extension: svg
+                      - link: >-
+                          https://ltt-storage.storage.yandexcloud.net/60d1b512b4cba6.12821983
+                        width: 144
+                        height: 60
+                        extension: svg
+                    name: BelkaCredit - Выдача
+                    cr: null
+                    epc: '164.59991886821'
+                  - id: 9
+                    image:
+                      - link: >-
+                          https://ltt-storage.storage.yandexcloud.net/5ed8fd00a889a6.22365601
+                        width: 288
+                        height: 120
+                        extension: svg+xml
+                      - link: >-
+                          https://ltt-storage.storage.yandexcloud.net/5ed8fd004201f1.76537760
+                        width: 144
+                        height: 60
+                        extension: svg+xml
+                    name: 'Быстроденьги - Выдача '
+                    cr: null
+                    epc: '131.62824207493'
+                  - id: 10
+                    image:
+                      - link: >-
+                          https://ltt-storage.storage.yandexcloud.net/60d31b656c3a40.62134514
+                        width: 288
+                        height: 120
+                        extension: svg
+                      - link: >-
+                          https://ltt-storage.storage.yandexcloud.net/60d31b655d2c95.14957068
+                        width: 144
+                        height: 60
+                        extension: svg
+                    name: Вебзайм - Выдача
+                    cr: null
+                    epc: '204.62032204331'
+                  - id: 16
+                    image:
+                      - link: >-
+                          https://ltt-storage.storage.yandexcloud.net/5ee0ec56660037.41487981
+                        width: 288
+                        height: 120
+                        extension: svg
+                      - link: >-
+                          https://ltt-storage.storage.yandexcloud.net/5ee0ec56202542.50351489
+                        width: 144
+                        height: 60
+                        extension: svg
+                    name: Limondo
+                    cr: null
+                    epc: '43.291572631579'
+  /v1/open/telegram/mark-advertiser:
+    get:
+      tags:
+        - v1 > open
+      summary: /telegram/mark-advertiser
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data: []
+  /v1/open/telegram-webhook/index:
+    get:
+      tags:
+        - v1 > open
+      summary: /telegram-webhook/index
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data: []
+  /v1/partner/advertiser/list:
+    get:
+      tags:
+        - v1 > partner
+      summary: /advertiser/list
+      description: Доступ по whiteList.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  - id: 12
+                    name: Сити (cytiads)
+                    createDate: '2020-11-12 14:28:17'
+                    updateDate: '2020-11-12 14:28:33'
+                    status: 1
+                    note: ''
+                    refusalWebmasters: '{}'
+                  - id: 181
+                    name: ИП Кузин
+                    createDate: '2023-12-13 14:04:21'
+                    updateDate: '2023-12-13 15:01:35'
+                    status: 2
+                    note: ''
+                    refusalWebmasters: '{}'
+                  - id: 182
+                    name: ООО Лидстех
+                    createDate: '2024-01-05 11:44:06'
+                    updateDate: '2024-01-05 11:44:06'
+                    status: 1
+                    note: для конкурсного оффера
+                    refusalWebmasters: '{}'
+                  - id: 183
+                    name: ООО МКК «Страна Экспресс»
+                    createDate: '2024-01-16 13:30:17'
+                    updateDate: '2024-01-16 13:30:17'
+                    status: 1
+                    note: ''
+                    refusalWebmasters: '{}'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data: []
+  /v1/partner/client/set-phone:
+    get:
+      tags:
+        - v1 > partner
+      summary: /client/set-phone
+      description: Доступ по whiteList.
+      parameters:
+        - name: uuid
+          in: query
+          schema:
+            type: string
+          example: 8d16e530116b42f2af321fbe10a09518
+        - name: phone
+          in: query
+          schema:
+            type: integer
+          example: '00000'
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                error:
+                  uuid:
+                    - Uuid is invalid.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data: []
+  /v1/partner/forbidden-offer/forbidden-offers:
+    get:
+      tags:
+        - v1 > partner
+      summary: /forbidden-offer/forbidden-offers
+      description: Доступ по whiteList.
+      parameters:
+        - name: phone
+          required: true
+          in: query
+          schema:
+            type: integer
+          description: Обязателен, если не указан UUID.
+        - name: uuid
+          required: true
+          in: query
+          schema:
+            type: integer
+          description: Обязателен, если не указан phone.
+        - name: offerids[]
+          in: query
+          schema:
+            type: string
+        - name: utm_source
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  - 5
+                  - 60
+                  - 333
+                  - 351
+                  - 636
+                debug:
+                  checkers:
+                    - checker: Ekapusta
+                      phone: '79203026990'
+                      result: true
+                      offerIds:
+                        - 60
+                        - 636
+                      isFromCache: false
+                      request: >-
+                        POST
+                        https://ekapusta.com/s/api/partner/checkPhone/6ed3dc8eb1a20/79203026990
+                      response:
+                        time: 0.347793
+                        isTimeout: false
+                        isError: false
+                        error: ''
+                        content:
+                          status: success
+                          phones:
+                            - phone: '9203026990'
+                              result: exists
+                    - checker: Konga
+                      phone: '79203026990'
+                      result: false
+                      offerIds:
+                        - 76
+                      isFromCache: false
+                      request: POST https://www.konga.ru/api/leads/Phones/Verify
+                      response:
+                        time: 0.140185
+                        isTimeout: false
+                        isError: false
+                        error: ''
+                        content:
+                          - number: '79203026990'
+                            result: New
+                    - checker: Smsfinance
+                      phone: '79203026990'
+                      result: true
+                      offerIds:
+                        - 333
+                      isFromCache: false
+                      request: >-
+                        GET
+                        https://www.smsfinance.ru/email-mobile-checker/rest-api/checkPhones/bXuYi65gIF/79203026990
+                      response:
+                        time: 0.073737
+                        isTimeout: false
+                        isError: false
+                        error: ''
+                        content:
+                          status: success
+                          exists:
+                            - '79203026990'
+                          result: unexists
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data: []
+  /v1/partner/forbidden-offer/forbidden-offers-from-checkers:
+    get:
+      tags:
+        - v1 > partner
+      summary: /forbidden-offer/forbidden-offers-from-checkers
+      description: Доступ по whiteList.
+      parameters:
+        - name: phone
+          in: query
+          schema:
+            type: integer
+          example: '79203026990'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  - 5
+                  - 60
+                  - 333
+                  - 351
+                  - 636
+                debug:
+                  checkers:
+                    - checker: Ekapusta
+                      phone: '79203026990'
+                      result: true
+                      offerIds:
+                        - 60
+                        - 636
+                      isFromCache: false
+                      request: >-
+                        POST
+                        https://ekapusta.com/s/api/partner/checkPhone/6ed3dc8eb1a20/79203026990
+                      response:
+                        time: 0.363356
+                        isTimeout: false
+                        isError: false
+                        error: ''
+                        content:
+                          status: success
+                          phones:
+                            - phone: '9203026990'
+                              result: exists
+                    - checker: Konga
+                      phone: '79203026990'
+                      result: false
+                      offerIds:
+                        - 76
+                      isFromCache: true
+                    - checker: Smsfinance
+                      phone: '79203026990'
+                      result: true
+                      offerIds:
+                        - 333
+                      isFromCache: false
+                      request: >-
+                        GET
+                        https://www.smsfinance.ru/email-mobile-checker/rest-api/checkPhones/bXuYi65gIF/79203026990
+                      response:
+                        time: 0.058685
+                        isTimeout: false
+                        isError: false
+                        error: ''
+                        content:
+                          status: success
+                          exists:
+                            - '79203026990'
+                    - checker: Vivus
+                      phone: '79203026990'
+                      result: false
+                      offerIds:
+                        - 59
+                        - 332
+                      isFromCache: true
+                    - checker: Cashu
+                      phone: '79203026990'
+                      result: false
+                      offerIds:
+                        - 47
+                        - 51
+                        - 100
+                        - 128
+                        - 701
+                      isFromCache: false
+                      request: POST https://cash-u.com/token/
+                      response:
+                        time: 0.072514
+                        isTimeout: false
+                        isError: true
+                        error: SSL connect error
+                        headers: []
+                        content: null
+                    - checker: Zaymer
+                      phone: '79203026990'
+                      result: false
+                      offerIds:
+                        - 66
+                        - 67
+                        - 644
+                        - 669
+                      isFromCache: true
+                    - checker: Credit7
+                      phone: '79203026990'
+                      result: true
+                      offerIds:
+                        - 5
+                        - 351
+                      isFromCache: false
+                      request: GET https://api.credit7.ru/partner/phone/79203026990
+                      response:
+                        time: 0.239196
+                        isTimeout: false
+                        isError: false
+                        error: ''
+                        content:
+                          exists:
+                            - '79203026990'
+                          unexists: []
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data: []
+  /v1/partner/forbidden-offer/forbidden-offers-from-db:
+    get:
+      tags:
+        - v1 > partner
+      summary: /forbidden-offer/forbidden-offers-from-db
+      description: Доступ по whiteList.
+      parameters:
+        - name: phone
+          in: query
+          schema:
+            type: integer
+          example: '79203026990'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data: []
+                debug: []
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data: []
+  /v1/partner/offer/list:
+    get:
+      tags:
+        - v1 > partner
+      summary: Cписок офферов
+      description: Доступ по whiteList.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  - id: 1
+                    image:
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/6515773d61f5c6.33252207
+                        width: 288
+                        height: 120
+                        extension: svg
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/6515773d5b8a16.93339909
+                        width: 144
+                        height: 60
+                        extension: svg
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/6515773d3f03e6.77949797
+                        width: 64
+                        height: 64
+                        extension: svg
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/6515773d1322d1.72924165
+                        width: 32
+                        height: 32
+                        extension: svg
+                    favImage:
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/6425caa0974880.49143490
+                        width: 288
+                        height: 120
+                        extension: jpeg
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/6425caa091bb53.23468481
+                        width: 144
+                        height: 60
+                        extension: jpeg
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/6425caa088a417.59558910
+                        width: 64
+                        height: 64
+                        extension: jpeg
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/6425caa07e0017.73489577
+                        width: 32
+                        height: 32
+                        extension: jpeg
+                    name: MoneyMan - Выдача
+                    text: >-
+                      <p><strong>Описание оффера: </strong>Moneyman — это
+                      микрофинансовая компания, предлагающая услуги по
+                      оформлению онлайн-займов людям, проживающим во всех
+                      регионах Российской Федерации. Деньги могут получить даже
+                      те заемщики, кто имеет российское гражданство, но временно
+                      находится за пределами страны.</p><p> Важное преимущество
+                      микрофинансовой компании Moneyman — очень быстрое
+                      оформление займов через интернет. Клиенты могут в течение
+                      10 — 15 минут оформить онлайн-заявку и получить деньги уже
+                      в день обращения.</p><p><strong>Сумма займа:</strong> от 1
+                      000 до 80 000 рублей.</p><p><strong>Возраст заемщика:
+                      </strong>от 18 до 75 лет</p><p><strong>Срок займа:
+                      </strong>от 5 дней до 126 дней</p><p><strong>Ставка:
+                      </strong>от 0% на первый заем </p><p><strong>ГЕО:
+                      </strong>РФ, кроме Крыма</p><p><strong>Запрещённый трафик:
+                      </strong>Контекстная реклама на Бренд, Мотивированный
+                      трафик, Toolbar, Дорвей-трафик, CashBack,Фейсбук и
+                      instagram </p><p><strong>Список минус-слов: <a
+                      href="https://docs.google.com/spreadsheets/d/1vSBYgDI7XZB14DP2z4fYlajA9fpCwEr0/edit#gid=1248904358">https://docs.google.com/document/d/1jog9G11726sZdo7O3MS0UNH5krh17_wgpraAxPg0FSQ/edit#</a></strong></p><p><strong>Баннеры
+                      и логотипы: <a
+                      href="https://drive.google.com/drive/folders/1xXS28ikoNG3dGVfIGVpRMIW24SQA6i8D">https://drive.google.com/drive/folders/1xXS28ikoNG...</a></strong></p><p><strong>Бриф:
+                      <a
+                      href="https://drive.google.com/drive/folders/1b1gIsZqMGRVljzsVKNk67C0l9J2TU0N3">https://drive.google.com/drive/folders/1b1gIsZqMGR...</a></strong></p>
+                    link: >-
+                      https://moneyman.ru/lp/main/?partner=LeadsTech1&clickid={clickId}&wmid={webmasterId}
+                    extra_links: []
+                    epc: 0
+                    cr: null
+                    currency: RUB
+                    country: RU
+                    erid: 2VtzqxFgkzy
+                    status: 10
+                    createDate: '2020-05-28 13:54:27'
+                    updateDate: '2024-02-21 17:07:20'
+                    advertiser_id: 5
+                    category_id: 1
+                    company_id: 55
+                    holdSeconds: 0
+                    goalAction: выдача
+                    slug: moneyman
+                    amount_min: '1500.0000'
+                    amount_max: '80000.0000'
+                    annual_percentage_min: '0.0000'
+                    daily_percentage_min: '0.0000'
+                    age_min: 18
+                    age_max: 75
+                    productName: выдача
+                    licenseNumber: '2110177000478'
+                    loanTermFrom: 5
+                    loanTermTo: 126
+                    refusalWebmasters: []
+                  - id: 2
+                    image:
+                      - link: >-
+                          https://ltt-storage.storage.yandexcloud.net/5ecfc1c1d602c6.50617363
+                        width: 288
+                        height: 120
+                        extension: svg+xml
+                      - link: >-
+                          https://ltt-storage.storage.yandexcloud.net/5ecfc1c16b0506.09236096
+                        width: 144
+                        height: 60
+                        extension: svg+xml
+                    favImage:
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/64143976b88923.87597514
+                        width: 288
+                        height: 120
+                        extension: jpeg
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/64143976b1b9b0.17319256
+                        width: 144
+                        height: 60
+                        extension: jpeg
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/64143976ab9a31.77719175
+                        width: 64
+                        height: 64
+                        extension: jpeg
+                      - link: >-
+                          https://ltt-bucket.storage.yandexcloud.net/641438f43e47d1.39078485
+                        width: 32
+                        height: 32
+                        extension: jpeg
+                    name: Monebo
+                    text: >-
+                      <p><strong></strong><strong>Описание оффера: </strong>Наш
+                      сервис подбора микрозаймов гарантирует высокий уровень
+                      безопасности обработки персональных данных благодаря
+                      использованию самых современных технологий информационной
+                      и технологической
+                      защиты</p><section></section><p><strong>Сумма
+                      займа</strong>: от 1 000 до 500 000
+                      рублей.</p><p><strong>Возраст заемщика:</strong> от 18 до
+                      75</p><p><strong>Срок займа:</strong> от 61 до 365
+                      дней</p><p><strong>Ставка: </strong>первый заём до 10 000
+                      рублей выдается по ставке 0% в случае своевременного
+                      погашения</p><p><strong>ГЕО:
+                      </strong>РФ</p><p><strong>Запрещённый трафик:</strong>
+                      фрод, мотивационный трафик, дорвей</p><p><strong>Список
+                      минус-слов: -</strong></p><p><strong>Баннеры и логотипы:
+                      -</strong></p>
+                    link: >-
+                      https://monebo.ru/?utm_source=leadstech&utm_medium={webmasterId}&utm_term={sub1}&sub1={sub1}&clickid={clickId}&rejphnum={sub8}&wmid={webmasterId}&wm_id={webmasterId}&sub10={sub10}
+                    extra_links: []
+                    epc: 0
+                    cr: null
+                    currency: RUB
+                    country: RU
+                    erid: LjN8KQvZ9
+                    status: 10
+                    createDate: '2020-05-28 16:50:58'
+                    updateDate: '2023-08-31 12:26:40'
+                    advertiser_id: 61
+                    category_id: 4
+                    company_id: null
+                    holdSeconds: 0
+                    goalAction: заявка
+                    slug: monebo
+                    amount_min: '1000.0000'
+                    amount_max: '500000.0000'
+                    annual_percentage_min: '0.0000'
+                    daily_percentage_min: '0.0000'
+                    age_min: 18
+                    age_max: 75
+                    productName: ''
+                    licenseNumber: ''
+                    loanTermFrom: 61
+                    loanTermTo: 365
+                    refusalWebmasters: []
+  /v1/partner/company/list:
+    get:
+      tags:
+        - v1 > partner
+      summary: Список юр лиц
+      description: Доступ по whiteList.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  - id: 1
+                    name: ООО "ИТ-ФИНАНС"
+                    address: >-
+                      443110, РОССИЯ, САМАРСКАЯ ОБЛ, Г САМАРА, УЛ ЛЕСНАЯ, д. 33,
+                      кв./оф. 6/65
+                    inn: '6316270558'
+                    ogrn: '1216300008011'
+                    kpp: '631601001'
+                    chiefPosition: Директор
+                    chiefFio: Самуйлов Владимир Викторович
+                    chiefEmail: vova@samujlov.ru
+                    chiefPhone: '79270216246'
+                    comment: ''
+                    createDate: '2021-05-12 16:13:44'
+                    updateDate: '2022-07-18 12:02:48'
+                    status: 1
+                  - id: 2
+                    name: ООО «ИТ-ЛИДС»
+                    address: >-
+                      141021, МОСКОВСКАЯ, Г.О. МЫТИЩИ, Г МЫТИЩИ, УЛ ЛЁТНАЯ, ДОМ
+                      40 КОРПУС 1,  КВ. 11
+                    inn: '5029261396'
+                    ogrn: '121500002693'
+                    kpp: '502901001'
+                    chiefPosition: Генеральный директор
+                    chiefFio: Худояров Илья Владимирович
+                    chiefEmail: ''
+                    chiefPhone: ''
+                    comment: ''
+                    createDate: '2021-12-17 16:08:49'
+                    updateDate: '2022-07-18 12:03:04'
+                    status: 1
+  /v1/partner/stat/by-builder:
+    get:
+      tags:
+        - v1 > partner
+      summary: Конструктор статистики
+      description: Доступ по whiteList.
+      parameters:
+        - name: dateStart
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-01'
+        - name: dateEnd
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-30'
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: pageSize
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '500'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  allItemsCount: 21
+                  items:
+                    '2024-01-09':
+                      '1':
+                        clicks: 100
+                      '2':
+                        clicks: 57
+                      '3':
+                        clicks: 135
+                      '4':
+                        clicks: 16
+                      '7':
+                        clicks: 45
+                      '50':
+                        clicks: 161
+                      '351':
+                        clicks: 99
+                      '777':
+                        clicks: 2
+                      '830':
+                        clicks: 1
+                      '840':
+                        clicks: 3
+                  summary:
+                    '2024-01-09':
+                      clicks: '619'
+                    '2024-01-10':
+                      clicks: '131'
+  /v1/partner/stat/by-day:
+    get:
+      tags:
+        - v1 > partner
+      summary: Cтатистика по дням
+      description: Доступ по whiteList.
+      parameters:
+        - name: dateStart
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-01'
+        - name: dateEnd
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-30'
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: pageSize
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '500'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  allItemsCount: 21
+                  items:
+                    - date: 09.01.2024
+                      clicks: 619
+                      uniques: 268
+                      hosts: 49
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                      token: MDAwMDAwMDAwMDAwMDAwMDAwMDA4NzYwOTYuMDA=
+                    - date: 10.01.2024
+                      clicks: 131
+                      uniques: 51
+                      hosts: 12
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                      token: MDAwMDAwMDAwMDAwMDAwMDAwMDAwMzc2MzYuMDA=
+  /v1/partner/stat/by-offer:
+    get:
+      tags:
+        - v1 > partner
+      summary: Статистика по офферам
+      description: Доступ по whiteList.
+      parameters:
+        - name: dateStart
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-01'
+        - name: dateEnd
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-30'
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: pageSize
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '500'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  allItemsCount: 841
+                  items:
+                    - clicks: 666
+                      uniques: 66
+                      hosts: 23
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                      token: MDAwMDAwMDAwMDAwMDAwMDAwMDA1NzAwMjUuMDA=
+                      offerId: 1
+                      offerTitle: MoneyMan - Выдача
+                    - clicks: 292
+                      uniques: 0
+                      hosts: 23
+                      conversions: 0
+                      approved: 0
+                      rejected: 0
+                      inprogress: 0
+                      hold: 0
+                      sumwebmaster: 0
+                      CR: 0
+                      AR: 0
+                      EPL: 0
+                      EPC: 0
+                      EPCHosts: 0
+                      token: MDAwMDAwMDAwMDAwMDAwMDAwMDAwOTkyMjUuMDA=
+                      offerId: 1
+                      offerTitle: MoneyMan - Выдача
+  /v1/partner/webmaster/list:
+    get:
+      tags:
+        - v1 > partner
+      summary: /webmaster
+      description: Доступ по whiteList.
+      parameters:
+        - name: ids[]
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  - id: 1
+                    offer_ids:
+                      - 1
+                      - 2
+                      - 3
+                      - 4
+                      - 9
+                      - 10
+                      - 16
+                      - 17
+                      - ...
+  /v1/partner/partner-domain/upsert:
+    post:
+      tags:
+        - v1 > partner
+      summary: /partner-domain/upsert
+      description: Доступ по whiteList.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                domain:
+                  type: string
+                  example: github.com
+                toDomain:
+                  type: string
+                  example: github12.com
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  id: 2391
+                  domain: github.com
+                  createdAt: '2024-02-21 06:40:29'
+                  updatedAt: '2024-02-21 06:40:29'
+  /v1/partner/partner-domain/create:
+    post:
+      tags:
+        - v1 > partner
+      summary: /partner-domain/create
+      description: Доступ по whiteList.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: '1906'
+                domain:
+                  type: string
+                  example: domain12345.ru
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  id: 1906
+                  domain: domain12345.ru
+                  createdAt: '2023-11-30 17:44:07'
+                  updatedAt: '2024-02-21 06:40:29'
+  /v1/partner/partner-domain/delete:
+    post:
+      tags:
+        - v1 > partner
+      summary: /partner-domain/delete
+      description: Доступ по whiteList.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: '1911'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  deleted: 1
+  /v2/partner/stat/by-builder:
+    get:
+      tags:
+        - v2
+      summary: /partner/stat/by-builder
+      description: Доступ по whiteList.
+      parameters:
+        - name: dateStart
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-01'
+        - name: dateEnd
+          required: true
+          in: query
+          schema:
+            type: string
+          example: '2024-01-30'
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: pageSize
+          required: true
+          in: query
+          schema:
+            type: integer
+          example: '500'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                data:
+                  pagination:
+                    page: 1
+                    pageSize: 1000
+                    pageCount: 1
+                    totalCount: 401
+                  allItemsCount: 21
+                  items:
+                    '2024-01-09':
+                      '1':
+                        clicks: 100
+                      '2':
+                        clicks: 57
+                      '3':
+                        clicks: 135
+                      '4':
+                        clicks: 16
+                      '5':
+                        clicks: 0
+                      '7':
+                        clicks: 45
+                      '8':
+                        clicks: 0
+                      '9':
+                        clicks: 0
+                    '2024-01-10':
+                      '1':
+                        clicks: 39
+                      '2':
+                        clicks: 27
+                      '3':
+                        clicks: 45
+                      '4':
+                        clicks: 5
+                      '5':
+                        clicks: 0
+                      '7':
+                        clicks: 15
+                      '8':
+                        clicks: 0
+  /v2/partner/stat/by-we-params:
+    get:
+      tags:
+        - v2
+      summary: /partner/stat/by-we-params
+      description: Доступ по whiteList.
+      parameters:
+        - name: dateStart
+          in: query
+          schema:
+            type: string
+          example: '2024-01-01'
+        - name: dateEnd
+          in: query
+          schema:
+            type: string
+          example: '2024-01-30'
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+          example: '500'
+        - name: valueNames[]
+          in: query
+          schema:
+            type: string
+          example: hosts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-0:
+                  summary: /partner/stat/by-we-params
+                  value:
+                    success: true
+                    data:
+                      - hosts: 7
+                example-1:
+                  summary: /partner/stat/by-we-params
+                  value:
+                    success: true
+                    data:
+                      - hosts: 7
+                        inprogress: 0
+                        rejected: 0
+                        cr: 0
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Auth-Token
